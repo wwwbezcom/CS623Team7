@@ -117,7 +117,7 @@ public class createData {
 	static final String jdbcUrl = "jdbc:postgresql://localhost/cs623_project";
 	static final String jdbcUsername = "postgres";
 	static final String jdbcPassword = "password";
-	static final String driver = "org.postgresql.Driver";
+//	static final String driver = "org.postgresql.Driver";
 	static final String createProduct = "CREATE TABLE Product " +
 									    "(prod VARCHAR(20) NOT NULL, " +
 									    " pname VARCHAR(30), " + 
