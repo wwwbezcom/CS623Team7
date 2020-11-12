@@ -9,7 +9,9 @@ public class Main {
 	public static void main(String[] args) throws SQLException {
 		createDatabaseIfNotExists();
 		group1AndGroup2();
+		dropTables();
 		group3AndGroup4();
+		dropTables();
 		group5AndGroup6();
 	}
 	
@@ -17,21 +19,18 @@ public class Main {
 		setup();
 		group1();
 		group2();
-		dropTables();
 	}
 	
 	static void group3AndGroup4() throws SQLException{
 		setup();
 		group3();
 		group4();
-		dropTables();
 	}
 	
 	static void group5AndGroup6() throws SQLException{
 		setup();
 		group5();
 		group6();
-		dropTables();
 	}
 
 	static void group1 () throws SQLException {
