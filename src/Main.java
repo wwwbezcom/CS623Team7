@@ -1,20 +1,37 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Main {
 
 	public static void main(String[] args) throws SQLException {
+		createDatabaseIfNotExists();
+		group1AndGroup2();
+		group3AndGroup4();
+		group5AndGroup6();
+	}
+	
+	static void group1AndGroup2() throws SQLException{
 		setup();
 		group1();
 		group2();
-		reset();
+		dropTables();
+	}
+	
+	static void group3AndGroup4() throws SQLException{
+		setup();
 		group3();
 		group4();
+		dropTables();
+	}
+	
+	static void group5AndGroup6() throws SQLException{
+		setup();
 		group5();
-		reset();
-		group6();		
+		group6();
+		dropTables();
 	}
 
 	static void group1 () throws SQLException {
@@ -25,23 +42,19 @@ public class Main {
 		boolean isAutoCommit = conn.getAutoCommit();
 		try {
 			conn.setAutoCommit(false);
-			try (PreparedStatement ps = conn.prepareStatement(group1Statement1)) {
+			try (PreparedStatement ps = conn.prepareStatement(group1Statement1);
+				 PreparedStatement pps = conn.prepareStatement(group1Statement2)) {
 				ps.executeUpdate();
-				System.out.println(" p1 deleted from Stock.");
+				System.out.println("p1 deleted from Stock.");
+				pps.executeUpdate();
+				System.out.println("p1 deleted from Product.");
 			} catch (SQLException se) {
-				System.out.println(" p1 deleting from Stock failed.");
-				se.printStackTrace();
-			}
-			try (PreparedStatement ps = conn.prepareStatement(group1Statement2)) {
-				ps.executeUpdate();
-				System.out.println(" p1 deleted from Product.");
-			} catch (SQLException se) {
-				System.out.println(" p1 deleting from Product failed.");
+				conn.rollback();
+				System.out.println("p1 deleting from Stock and Product failed: ");
 				se.printStackTrace();
 			}
 			conn.commit();
 		} catch (SQLException se) {
-			conn.rollback();
 			System.out.println("Group 1 execution failed for reason below:");
 			se.printStackTrace();
 		} finally {
@@ -58,23 +71,19 @@ public class Main {
 		boolean isAutoCommit = conn.getAutoCommit();
 		try {
 			conn.setAutoCommit(false);
-			try (PreparedStatement ps = conn.prepareStatement(group2Statement1)) {
+			try (PreparedStatement ps = conn.prepareStatement(group2Statement1);
+				 PreparedStatement pps = conn.prepareStatement(group2Statement2)) {
 				ps.executeUpdate();
-				System.out.println("d1 deleted from Stock.");
-			} catch (SQLException se) {
-				System.out.println("d1 deleting from Stock failed.");
-				se.printStackTrace();
-			}
-			try (PreparedStatement ps = conn.prepareStatement(group2Statement2)) {
-				ps.executeUpdate();
+				System.out.println("p1 deleted from Stock.");
+				pps.executeUpdate();
 				System.out.println("d1 deleted from Depot.");
 			} catch (SQLException se) {
-				System.out.println("d1 deleting from Depot failed.");
+				conn.rollback();
+				System.out.println("d1 deleting from Stock and Depot failed: ");
 				se.printStackTrace();
 			}
 			conn.commit();
 		} catch (SQLException se) {
-			conn.rollback();
 			System.out.println("Group 2 execution failed for reason below:");
 			se.printStackTrace();
 		} finally {
@@ -91,23 +100,20 @@ public class Main {
 		boolean isAutoCommit = conn.getAutoCommit();
 		try {
 			conn.setAutoCommit(false);
-			try (PreparedStatement ps = conn.prepareStatement(group3Statement1)) {
+			try (PreparedStatement ps = conn.prepareStatement(group3Statement1);
+				 PreparedStatement pps = conn.prepareStatement(group3Statement2)) {
 				ps.executeUpdate();
+				System.out.println("Update constraint for on Update Cascade succeeded");
+				pps.setString(1, "pp1");
+				pps.executeUpdate();
+				System.out.println("Update pp1 succeeded");
 			} catch (SQLException se) {
-				System.out.println("Update constraint failed.");
-				se.printStackTrace();
-			}
-			try (PreparedStatement ps = conn.prepareStatement(group3Statement2)) {
-				ps.setString(1, "pp1");
-				ps.executeUpdate();
-				System.out.println("Updated p1 to pp1");
-			} catch (SQLException se) {
-				System.out.println("Update pp1 failed");
+				conn.rollback();
+				System.out.println("Update pp1 failed: ");
 				se.printStackTrace();
 			}
 			conn.commit();
 		} catch (SQLException se) {
-			conn.rollback();
 			System.out.println("Group 3 execution failed for reason below:");
 			se.printStackTrace();
 		} finally {
@@ -124,23 +130,20 @@ public class Main {
 		boolean isAutoCommit = conn.getAutoCommit();
 		try {
 			conn.setAutoCommit(false);
-			try (PreparedStatement ps = conn.prepareStatement(group4Statement1)) {
+			try (PreparedStatement ps = conn.prepareStatement(group4Statement1);
+				 PreparedStatement pps = conn.prepareStatement(group4Statement2)) {
 				ps.executeUpdate();
+				System.out.println("Update constraint for on Update Cascade succeeded");
+				pps.setString(1, "dd1");
+				pps.executeUpdate();
+				System.out.println("Update dd1 succeeded");
 			} catch (SQLException se) {
-				System.out.println("Update constraint failed.");
-				se.printStackTrace();
-			}
-			try (PreparedStatement ps = conn.prepareStatement(group4Statement2)) {
-				ps.setString(1, "dd1");
-				ps.executeUpdate();
-				System.out.println("Updated dd1 to dd1");
-			} catch (SQLException se) {
-				System.out.println("Update dd1 failed");
+				conn.rollback();
+				System.out.println("Update dd1 failed: ");
 				se.printStackTrace();
 			}
 			conn.commit();
 		} catch (SQLException se) {
-			conn.rollback();
 			System.out.println("Group 4 execution failed for reason below:");
 			se.printStackTrace();
 		} finally {
@@ -157,29 +160,25 @@ public class Main {
 		boolean isAutoCommit = conn.getAutoCommit();
 		try {
 			conn.setAutoCommit(false);
-			try (PreparedStatement ps = conn.prepareStatement(group5Statement1)) {
+			try (PreparedStatement ps = conn.prepareStatement(group5Statement1);
+				 PreparedStatement pps = conn.prepareStatement(group5Statement2)) {
 				ps.setString(1, "p100");
 				ps.setString(2, "cd");
 				ps.setFloat(3, 5);
 				ps.executeUpdate();
 				System.out.println("Insert into Product succeeded");
-			} catch (SQLException se) {
-				System.out.println("Insert into product failed");
-				se.printStackTrace();
-			}
-			try (PreparedStatement ps = conn.prepareStatement(group5Statement2)) {
-				ps.setString(1, "p100");
-				ps.setString(2, "d2");
-				ps.setInt(3, 50);
-				ps.executeUpdate();
+				pps.setString(1, "p100");
+				pps.setString(2, "d2");
+				pps.setInt(3, 50);
+				pps.executeUpdate();
 				System.out.println("Insert into Stock succeeded");
 			} catch (SQLException se) {
-				System.out.println("Insert into stock failed");
+				conn.rollback();
+				System.out.println("Insert into Stock and Product failed: ");
 				se.printStackTrace();
 			}
 			conn.commit();
 		} catch (SQLException se) {
-			conn.rollback();
 			System.out.println("Group 5 execution failed for reason below:");
 			se.printStackTrace();
 		} finally {
@@ -196,29 +195,25 @@ public class Main {
 		boolean isAutoCommit = conn.getAutoCommit();
 		try {
 			conn.setAutoCommit(false);
-			try (PreparedStatement ps = conn.prepareStatement(group6Statement1)) {
+			try (PreparedStatement ps = conn.prepareStatement(group6Statement1);
+				 PreparedStatement pps = conn.prepareStatement(group6Statement2)) {
 				ps.setString(1, "d100");
 				ps.setString(2, "Chicago");
 				ps.setInt(3, 100);
 				ps.executeUpdate();
 				System.out.println("Insert into Depot succeeded");
-			} catch (SQLException se) {
-				System.out.println("Insert into depot failed");
-				se.printStackTrace();
-			}
-			try (PreparedStatement ps = conn.prepareStatement(group6Statement2)) {
 				ps.setString(1, "p1");
 				ps.setString(2, "d100");
 				ps.setInt(3, 100);
 				ps.executeUpdate();
 				System.out.println("Insert into Stock succeeded");
 			} catch (SQLException se) {
-				System.out.println("Insert into stock failed");
+				conn.rollback();
+				System.out.println("Insert into Stock and Depot failed: ");
 				se.printStackTrace();
 			}
 			conn.commit();
 		} catch (SQLException se) {
-			conn.rollback();
 			System.out.println("Group 6 execution failed for reason below:");
 			se.printStackTrace();
 		} finally {
@@ -234,6 +229,7 @@ public class Main {
 		createData.insertDepotTable();
 		createData.createStocksTables();
 		createData.insertStockTable();
+		System.out.println("Setup successfully");
 	}
 	
 	static void dropTables () throws SQLException {
@@ -243,25 +239,18 @@ public class Main {
 
 		try (Connection conn = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword);) {
 			conn.setAutoCommit(false);
-			try (PreparedStatement ps = conn.prepareStatement(dropStatement1)) {
+			try (PreparedStatement ps = conn.prepareStatement(dropStatement1);
+				 PreparedStatement pps = conn.prepareStatement(dropStatement2);
+				 PreparedStatement pss = conn.prepareStatement(dropStatement3)) {
 				ps.executeUpdate();
 				System.out.println(" Dropped Stock.");
-			} catch (SQLException se) {
-				System.out.println(" Dropping Stock failed.");
-				se.printStackTrace();
-			}
-			try (PreparedStatement ps = conn.prepareStatement(dropStatement2)) {
-				ps.executeUpdate();
+				pps.executeUpdate();
 				System.out.println(" Dropped Product.");
-			} catch (SQLException se) {
-				System.out.println(" Dropping Product failed.");
-				se.printStackTrace();
-			}
-			try (PreparedStatement ps = conn.prepareStatement(dropStatement3)) {
-				ps.executeUpdate();
+				pss.executeUpdate();
 				System.out.println(" Dropped Depot.");
 			} catch (SQLException se) {
-				System.out.println(" Dropping Depot failed.");
+				conn.rollback();
+				System.out.println(" Dropping tables failed.");
 				se.printStackTrace();
 			}
 			conn.commit();
@@ -271,9 +260,27 @@ public class Main {
 		}
 	}
 	
-	static void reset() throws SQLException {
-		dropTables();
-		setup();
+	static void createDatabaseIfNotExists() throws SQLException {
+		final String jdbcUrlNoDatabase = "jdbc:postgresql://localhost/";
+		final String cDINE1 = "SELECT datname FROM pg_catalog.pg_database WHERE datname = ?";
+		final String cDINE2 = "CREATE DATABASE cs623_project;";
+
+		
+		try (Connection conn = DriverManager.getConnection(jdbcUrlNoDatabase, jdbcUsername, jdbcPassword);){
+			try (PreparedStatement ps = conn.prepareStatement(cDINE1)){
+				ps.setString(1, "cs623_project");
+				try (ResultSet rs = ps.executeQuery()){
+					if (!rs.next()) {
+						try (PreparedStatement pps = conn.prepareStatement(cDINE2)){
+							pps.executeUpdate();
+							System.out.println("cs623_project database created");
+						}
+					} else {
+						System.out.println("cs623_project database already exist");
+					}
+				}
+			}
+		}
 	}
 	
 	static final String jdbcUrl = "jdbc:postgresql://localhost/cs623_project";

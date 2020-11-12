@@ -9,8 +9,8 @@ public class createData {
 		try(Connection conn = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword);){
 			System.out.println("Connection to cs623_project is successful");
 			try (PreparedStatement ps = conn.prepareStatement(createProduct)){
-			  	int n = ps.executeUpdate();
-			  	System.out.println(n + " Product table created.");
+			  	 	ps.executeUpdate();
+			  	System.out.println("Product table created.");
 			} catch(SQLException se) {
 					  	System.out.println("Product table create failed. Maybe already exist");
 					  	se.printStackTrace();
@@ -45,8 +45,8 @@ public class createData {
 		try(Connection conn = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword);){
 			System.out.println("Connection to cs623_project is successful");
 			try (PreparedStatement ps = conn.prepareStatement(createDepot)){
-			  	int n = ps.executeUpdate();
-			  	System.out.println(n + " Depot table created.");
+			  	 	ps.executeUpdate();
+			  	System.out.println("Depot table created.");
 			} catch(SQLException se) {
 					  	System.out.println("Depot table create failed. Maybe already exist");
 					  	se.printStackTrace();
@@ -81,8 +81,8 @@ public class createData {
 		try(Connection conn = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword);){
 			System.out.println("Connection to cs623_project is successful");
 			try (PreparedStatement ps = conn.prepareStatement(createStock)){
-			  	int n = ps.executeUpdate();
-			  	System.out.println(n + " Stock table created.");
+			  	 	ps.executeUpdate();
+			  	System.out.println("Stock table created.");
 			} catch(SQLException se) {
 					  	System.out.println("Stock table create failed. Maybe already exist");
 					  	se.printStackTrace();
