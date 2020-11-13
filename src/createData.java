@@ -13,7 +13,7 @@ public class createData {
 			  	System.out.println("Product table created.");
 			} catch(SQLException se) {
 					  	System.out.println("Product table create failed. Maybe already exist");
-					  	se.printStackTrace();
+//					  	se.printStackTrace();
 			 }
 		}
 	}
@@ -36,7 +36,7 @@ public class createData {
 				conn.setAutoCommit(isAutoCommit);
 			} catch(SQLException se) {
 			  	System.out.println("Product table data inserted failed");
-			  	se.printStackTrace();
+//			  	se.printStackTrace();
 			  }
 		}
 	}
@@ -49,7 +49,7 @@ public class createData {
 			  	System.out.println("Depot table created.");
 			} catch(SQLException se) {
 					  	System.out.println("Depot table create failed. Maybe already exist");
-					  	se.printStackTrace();
+//					  	se.printStackTrace();
 			 }
 		}
 	}
@@ -72,7 +72,7 @@ public class createData {
 				conn.setAutoCommit(isAutoCommit);
 			} catch(SQLException se) {
 			  	System.out.println("Depot table data inserted failed");
-			  	se.printStackTrace();
+//			  	se.printStackTrace();
 			  }
 		}
 	}
@@ -85,7 +85,7 @@ public class createData {
 			  	System.out.println("Stock table created.");
 			} catch(SQLException se) {
 					  	System.out.println("Stock table create failed. Maybe already exist");
-					  	se.printStackTrace();
+//					  	se.printStackTrace();
 			 }
 		}
 	}
@@ -108,7 +108,7 @@ public class createData {
 				conn.setAutoCommit(isAutoCommit);
 			} catch(SQLException se) {
 			  	System.out.println("Stock table data inserted failed");
-			  	se.printStackTrace();
+//			  	se.printStackTrace();
 			  }
 		}
 	}

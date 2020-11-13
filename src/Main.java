@@ -2,16 +2,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Main {
 
 	public static void main(String[] args) throws SQLException {
 		createDatabaseIfNotExists();
 		group1AndGroup2();
-		dropTables();
 		group3AndGroup4();
-		dropTables();
 		group5AndGroup6();
 	}
 	
@@ -19,18 +20,30 @@ public class Main {
 		setup();
 		group1();
 		group2();
+		System.out.println("----------------------------");
+		System.out.println("Result for group1 and group2");
+		showTheResult();
+		dropTables();
 	}
 	
 	static void group3AndGroup4() throws SQLException{
 		setup();
 		group3();
 		group4();
+		System.out.println("----------------------------");
+		System.out.println("Result for group3 and group4");
+		showTheResult();
+		dropTables();
 	}
 	
 	static void group5AndGroup6() throws SQLException{
 		setup();
 		group5();
 		group6();
+		System.out.println("----------------------------");
+		System.out.println("Result for group5 and group6");
+		showTheResult();
+		dropTables();
 	}
 
 	static void group1 () throws SQLException {
@@ -236,7 +249,7 @@ public class Main {
 		final String dropStatement2 = "DROP TABLE product;";
 		final String dropStatement3 = "DROP TABLE depot;";
 
-		try (Connection conn = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword);) {
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword)) {
 			conn.setAutoCommit(false);
 			try (PreparedStatement ps = conn.prepareStatement(dropStatement1);
 				 PreparedStatement pps = conn.prepareStatement(dropStatement2);
@@ -281,6 +294,119 @@ public class Main {
 			}
 		}
 	}
+	
+	static void showTheResult() throws SQLException {
+		final String queryStock = "SELECT * FROM stock";
+		final String queryProduct = "SELECT * FROM product";
+		final String queryDepot = "SELECT * FROM depot";
+		
+		try(Connection conn = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword);){
+			try (PreparedStatement ps = conn.prepareStatement(queryStock)){
+				try (ResultSet rs = ps.executeQuery()){
+					ResultSetMetaData resultSetMetaData  = rs.getMetaData();
+					int ColumnCount = resultSetMetaData .getColumnCount();
+			        int[] columnMaxLengths = new int[ColumnCount];
+			        ArrayList<String[]> results = new ArrayList<>();
+
+					while (rs.next()) {
+			            String[] columnStr = new String[ColumnCount];
+
+						for(int i = 0 ; i < ColumnCount; i++){
+			                columnStr[i] = rs.getString(i + 1);
+			                columnMaxLengths[i] = Math.max(columnMaxLengths[i], (columnStr[i] == null) ? 0 : columnStr[i].length());
+			                columnMaxLengths[i] = Math.max(columnMaxLengths[i], resultSetMetaData.getColumnName(i+1).length());
+						}
+			            results.add(columnStr);
+					}
+					printer.printSeparator(columnMaxLengths);
+			        printer.printColumnName(resultSetMetaData, columnMaxLengths);
+			        printer.printSeparator(columnMaxLengths);
+			        Iterator<String[]> iterator = results.iterator();
+			        String[] columnStr;
+			        while (iterator.hasNext()) {
+			            columnStr = iterator.next();
+			            for (int i = 0; i < ColumnCount; i++) {
+			                // System.out.printf("|%" + (columnMaxLengths[i] + 1) + "s", columnStr[i]);
+			                System.out.printf("|%" + columnMaxLengths[i] + "s", columnStr[i]);
+			            }
+			            System.out.println("|");
+			        }
+			        printer.printSeparator(columnMaxLengths);
+					}
+			}
+			
+			try (PreparedStatement ps = conn.prepareStatement(queryProduct)){
+				try (ResultSet rs = ps.executeQuery()){
+					ResultSetMetaData resultSetMetaData  = rs.getMetaData();
+					int ColumnCount = resultSetMetaData .getColumnCount();
+			        int[] columnMaxLengths = new int[ColumnCount];
+			        ArrayList<String[]> results = new ArrayList<>();
+
+					while (rs.next()) {
+			            String[] columnStr = new String[ColumnCount];
+
+						for(int i = 0 ; i < ColumnCount; i++){
+			                columnStr[i] = rs.getString(i + 1);
+			                columnMaxLengths[i] = Math.max(columnMaxLengths[i], (columnStr[i] == null) ? 0 : columnStr[i].length());
+			                columnMaxLengths[i] = Math.max(columnMaxLengths[i], resultSetMetaData.getColumnName(i+1).length());
+						}
+			            results.add(columnStr);
+					}
+					printer.printSeparator(columnMaxLengths);
+			        printer.printColumnName(resultSetMetaData, columnMaxLengths);
+			        printer.printSeparator(columnMaxLengths);
+			        Iterator<String[]> iterator = results.iterator();
+			        String[] columnStr;
+			        while (iterator.hasNext()) {
+			            columnStr = iterator.next();
+			            for (int i = 0; i < ColumnCount; i++) {
+			                // System.out.printf("|%" + (columnMaxLengths[i] + 1) + "s", columnStr[i]);
+			                System.out.printf("|%" + columnMaxLengths[i] + "s", columnStr[i]);
+			            }
+			            System.out.println("|");
+			        }
+			        printer.printSeparator(columnMaxLengths);
+					}
+			}
+			
+			try (PreparedStatement ps = conn.prepareStatement(queryDepot)){
+				try (ResultSet rs = ps.executeQuery()){
+					ResultSetMetaData resultSetMetaData  = rs.getMetaData();
+					int ColumnCount = resultSetMetaData .getColumnCount();
+			        int[] columnMaxLengths = new int[ColumnCount];
+			        ArrayList<String[]> results = new ArrayList<>();
+
+					while (rs.next()) {
+			            String[] columnStr = new String[ColumnCount];
+
+						for(int i = 0 ; i < ColumnCount; i++){
+			                columnStr[i] = rs.getString(i + 1);
+			                columnMaxLengths[i] = Math.max(columnMaxLengths[i], (columnStr[i] == null) ? 0 : columnStr[i].length());
+			                columnMaxLengths[i] = Math.max(columnMaxLengths[i], resultSetMetaData.getColumnName(i+1).length());
+						}
+			            results.add(columnStr);
+					}
+					printer.printSeparator(columnMaxLengths);
+			        printer.printColumnName(resultSetMetaData, columnMaxLengths);
+			        printer.printSeparator(columnMaxLengths);
+			        Iterator<String[]> iterator = results.iterator();
+			        String[] columnStr;
+			        while (iterator.hasNext()) {
+			            columnStr = iterator.next();
+			            for (int i = 0; i < ColumnCount; i++) {
+			                // System.out.printf("|%" + (columnMaxLengths[i] + 1) + "s", columnStr[i]);
+			                System.out.printf("|%" + columnMaxLengths[i] + "s", columnStr[i]);
+			            }
+			            System.out.println("|");
+			        }
+			        printer.printSeparator(columnMaxLengths);
+					System.out.println("----------------------------");
+					}
+			}
+		}
+
+	}
+	
 	
 	static final String jdbcUrl = "jdbc:postgresql://localhost/cs623_project";
 	static final String jdbcUsername = "postgres";
